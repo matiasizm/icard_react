@@ -2,49 +2,48 @@ import React, { useState, useEffect } from "react";
 import { Loader } from "semantic-ui-react";
 import {
   HeaderPage,
-  TableCategoryAdmin,
-  AddEditCategoryForm,
+  TableProductAdmin,
+  AddEditProductForm,
 } from "../../components/Admin";
 import { ModalBasic } from "../../components/Common";
-import { useCategory } from "../../hooks";
+import { useProduct } from "../../hooks";
 
-export function CategoriesAdmin() {
+export function ProductAdmin() {
   const [showModal, setShowModal] = useState(false);
   const [titleModal, setTitleModal] = useState(null);
   const [contentModal, setContentModal] = useState(null);
-  const [refetch, setRefetch] = useState(false);//para actualizar la pagina despues de crear el modal
-  
-  const { loading, categories, getCategories, deleteCategory } = useCategory();
+  const [refetch, setRefetch] = useState(false); //para que se actualice la pagina al agregar un producto
+  const { loading, products, getProducts, deleteProduct } = useProduct();
 
-  useEffect(() => getCategories(), [refetch]);
+  useEffect(() => getProducts(), [refetch]);
 
   const openCloseModal = () => setShowModal((prev) => !prev);
   const onRefetch = () => setRefetch((prev) => !prev);
 
-  const addCategory = () => {
-    setTitleModal("Nueva categoria");
+  const addProduct = () => {
+    setTitleModal("Nuevo producto");
     setContentModal(
-      <AddEditCategoryForm onClose={openCloseModal} onRefetch={onRefetch} />
+      <AddEditProductForm onClose={openCloseModal} onRefetch={onRefetch} />
     );
     openCloseModal();
   };
 
-  const updateCategory = (data) => {
-    setTitleModal("Actualizar categoria");
+  const updateProduct = (data) => {
+    setTitleModal("Actualizar producto");
     setContentModal(
-      <AddEditCategoryForm
+      <AddEditProductForm
         onClose={openCloseModal}
         onRefetch={onRefetch}
-        category={data}
+        product={data}
       />
     );
     openCloseModal();
   };
 
-  const onDeleteCategory = async (data) => {
-    const result = window.confirm(`¿Eliminar categoría ${data.title}?`);
+  const onDeleteProduct = async (data) => {
+    const result = window.confirm(`¿Eliminar producto ${data.title}?`);
     if (result) {
-      await deleteCategory(data.id);
+      await deleteProduct(data.id);
       onRefetch();
     }
   };
@@ -52,19 +51,20 @@ export function CategoriesAdmin() {
   return (
     <>
       <HeaderPage
-        title="Categorias"
-        btnTitle="Nueva categoria"
-        btnClick={addCategory}
+        title="Productos"
+        btnTitle="Nuevo producto"
+        btnClick={addProduct}
       />
+
       {loading ? (
         <Loader active inline="centered">
           Cargando...
         </Loader>
       ) : (
-        <TableCategoryAdmin
-          categories={categories}
-          updateCategory={updateCategory}
-          deleteCategory={onDeleteCategory}
+        <TableProductAdmin
+          products={products}
+          updateProduct={updateProduct}
+          deleteProduct={onDeleteProduct}
         />
       )}
 

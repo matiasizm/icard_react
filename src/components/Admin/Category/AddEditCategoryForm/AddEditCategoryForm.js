@@ -9,13 +9,13 @@ import "./AddEditCategoryForm.scss";
 export function AddEditCategoryForm(props) {
   const { onClose, onRefetch, category } = props;
   const [previewImage, setPreviewImage] = useState(category?.image || null);
-  const { addCategory, updateCategory } = useCategory();
+  const { addCategory, updateCategory } = useCategory(); //hooks para enviar al backend
 
   const formik = useFormik({
     initialValues: initialValues(category),
     validationSchema: Yup.object(category ? updateSchema() : newSchema()),
-    validateOnChange: false,
-    onSubmit: async (formValue) => {
+    validateOnChange: false, // formulario se valida solo cuando se apreta boton
+    onSubmit: async (formValue) => { // si se presiona el boton, usa el usecategory parqa crear el hook y envviar a backend a traves de post
       try {
         if (category) await updateCategory(category.id, formValue);
         else await addCategory(formValue);
